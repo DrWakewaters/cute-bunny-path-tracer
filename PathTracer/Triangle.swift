@@ -14,11 +14,12 @@ struct Triangle : CustomStringConvertible {
     var rAbsorbance: Double
     var gAbsorbance: Double
     var bAbsorbance: Double
+    var diffuseReflectionProbability: Double
     var description: String {
         return "(\(self.firstNode), \(self.secondNode), \(self.thirdNode))"
     }
 
-    init(firstNode: Vector3D, secondNode: Vector3D, thirdNode: Vector3D, rAbsorbance: Double, gAbsorbance: Double, bAbsorbance: Double) {
+    init(firstNode: Vector3D, secondNode: Vector3D, thirdNode: Vector3D, rAbsorbance: Double, gAbsorbance: Double, bAbsorbance: Double, diffuseReflectionProbability: Double) {
         self.firstNode = firstNode
         self.secondNode = secondNode
         self.thirdNode = thirdNode

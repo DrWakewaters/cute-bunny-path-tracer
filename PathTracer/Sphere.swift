@@ -11,5 +11,6 @@ struct Sphere {
     var rAbsorbanceTransmittancePerPixel: Double
     var gAbsorbanceTransmittancePerPixel: Double
     var bAbsorbanceTransmittancePerPixel: Double
+    var diffuseReflectionProbability: Double
     var isOpaque: Bool
 }

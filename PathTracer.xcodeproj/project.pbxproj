@@ -17,6 +17,7 @@
 		AA36A5C91D5BC45F002AE90E /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C81D5BC45F002AE90E /* Triangle.swift */; };
 		AA36A5CB1D5BCE10002AE90E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CA1D5BCE10002AE90E /* Renderer.swift */; };
 		AA36A5CD1D5BD089002AE90E /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CC1D5BD089002AE90E /* PixelData.swift */; };
+		AA6D22A11D67ADE90063A5A0 /* Halton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D22A01D67ADE90063A5A0 /* Halton.swift */; };
 		AA90D5151D62495600FFB0FA /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA90D5141D62495500FFB0FA /* Position.swift */; };
 /* End PBXBuildFile section */
 
@@ -44,6 +45,7 @@
 		AA36A5C81D5BC45F002AE90E /* Triangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		AA36A5CA1D5BCE10002AE90E /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		AA36A5CC1D5BD089002AE90E /* PixelData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelData.swift; sourceTree = "<group>"; };
+		AA6D22A01D67ADE90063A5A0 /* Halton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Halton.swift; sourceTree = "<group>"; };
 		AA90D5141D62495500FFB0FA /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -79,6 +81,7 @@
 			children = (
 				AA36A5B51D5BA3DB002AE90E /* main.swift */,
 				AA36A5CA1D5BCE10002AE90E /* Renderer.swift */,
+				AA6D22A01D67ADE90063A5A0 /* Halton.swift */,
 				AA90D5141D62495500FFB0FA /* Position.swift */,
 				AA36A5CC1D5BD089002AE90E /* PixelData.swift */,
 				AA36A5C61D5BBD78002AE90E /* Room.swift */,
@@ -150,6 +153,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA90D5151D62495600FFB0FA /* Position.swift in Sources */,
+				AA6D22A11D67ADE90063A5A0 /* Halton.swift in Sources */,
 				AA36A5BD1D5BA423002AE90E /* Vector3D.swift in Sources */,
 				AA36A5BF1D5BA44A002AE90E /* Vector2D.swift in Sources */,
 				AA36A5C71D5BBD78002AE90E /* Room.swift in Sources */,
