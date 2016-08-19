@@ -8,6 +8,16 @@
 
 /* Begin PBXBuildFile section */
 		AA36A5B61D5BA3DB002AE90E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5B51D5BA3DB002AE90E /* main.swift */; };
+		AA36A5BD1D5BA423002AE90E /* Vector3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5BC1D5BA423002AE90E /* Vector3D.swift */; };
+		AA36A5BF1D5BA44A002AE90E /* Vector2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5BE1D5BA44A002AE90E /* Vector2D.swift */; };
+		AA36A5C11D5BA4C6002AE90E /* Sphere.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C01D5BA4C6002AE90E /* Sphere.swift */; };
+		AA36A5C31D5BA535002AE90E /* Photon.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C21D5BA535002AE90E /* Photon.swift */; };
+		AA36A5C51D5BA584002AE90E /* Lightsource.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C41D5BA584002AE90E /* Lightsource.swift */; };
+		AA36A5C71D5BBD78002AE90E /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C61D5BBD78002AE90E /* Room.swift */; };
+		AA36A5C91D5BC45F002AE90E /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C81D5BC45F002AE90E /* Triangle.swift */; };
+		AA36A5CB1D5BCE10002AE90E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CA1D5BCE10002AE90E /* Renderer.swift */; };
+		AA36A5CD1D5BD089002AE90E /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CC1D5BD089002AE90E /* PixelData.swift */; };
+		AA90D5151D62495600FFB0FA /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA90D5141D62495500FFB0FA /* Position.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -25,6 +35,16 @@
 /* Begin PBXFileReference section */
 		AA36A5B21D5BA3DB002AE90E /* PathTracer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PathTracer; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA36A5B51D5BA3DB002AE90E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
+		AA36A5BC1D5BA423002AE90E /* Vector3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector3D.swift; sourceTree = "<group>"; };
+		AA36A5BE1D5BA44A002AE90E /* Vector2D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector2D.swift; sourceTree = "<group>"; };
+		AA36A5C01D5BA4C6002AE90E /* Sphere.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Sphere.swift; sourceTree = "<group>"; };
+		AA36A5C21D5BA535002AE90E /* Photon.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Photon.swift; sourceTree = "<group>"; };
+		AA36A5C41D5BA584002AE90E /* Lightsource.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Lightsource.swift; sourceTree = "<group>"; };
+		AA36A5C61D5BBD78002AE90E /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
+		AA36A5C81D5BC45F002AE90E /* Triangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
+		AA36A5CA1D5BCE10002AE90E /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
+		AA36A5CC1D5BD089002AE90E /* PixelData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelData.swift; sourceTree = "<group>"; };
+		AA90D5141D62495500FFB0FA /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -58,6 +78,16 @@
 			isa = PBXGroup;
 			children = (
 				AA36A5B51D5BA3DB002AE90E /* main.swift */,
+				AA36A5CA1D5BCE10002AE90E /* Renderer.swift */,
+				AA90D5141D62495500FFB0FA /* Position.swift */,
+				AA36A5CC1D5BD089002AE90E /* PixelData.swift */,
+				AA36A5C61D5BBD78002AE90E /* Room.swift */,
+				AA36A5C81D5BC45F002AE90E /* Triangle.swift */,
+				AA36A5C41D5BA584002AE90E /* Lightsource.swift */,
+				AA36A5C21D5BA535002AE90E /* Photon.swift */,
+				AA36A5C01D5BA4C6002AE90E /* Sphere.swift */,
+				AA36A5BE1D5BA44A002AE90E /* Vector2D.swift */,
+				AA36A5BC1D5BA423002AE90E /* Vector3D.swift */,
 			);
 			path = PathTracer;
 			sourceTree = "<group>";
@@ -119,7 +149,17 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA90D5151D62495600FFB0FA /* Position.swift in Sources */,
+				AA36A5BD1D5BA423002AE90E /* Vector3D.swift in Sources */,
+				AA36A5BF1D5BA44A002AE90E /* Vector2D.swift in Sources */,
+				AA36A5C71D5BBD78002AE90E /* Room.swift in Sources */,
+				AA36A5C11D5BA4C6002AE90E /* Sphere.swift in Sources */,
+				AA36A5C51D5BA584002AE90E /* Lightsource.swift in Sources */,
+				AA36A5C31D5BA535002AE90E /* Photon.swift in Sources */,
 				AA36A5B61D5BA3DB002AE90E /* main.swift in Sources */,
+				AA36A5CB1D5BCE10002AE90E /* Renderer.swift in Sources */,
+				AA36A5CD1D5BD089002AE90E /* PixelData.swift in Sources */,
+				AA36A5C91D5BC45F002AE90E /* Triangle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -211,14 +251,30 @@
 		AA36A5BA1D5BA3DB002AE90E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_FAST_MATH = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_UNROLL_LOOPS = YES;
+				LLVM_LTO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_DISABLE_SAFETY_CHECKS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Debug;
 		};
 		AA36A5BB1D5BA3DB002AE90E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_FAST_MATH = YES;
+				GCC_INLINES_ARE_PRIVATE_EXTERN = YES;
+				GCC_OPTIMIZATION_LEVEL = fast;
+				GCC_SYMBOLS_PRIVATE_EXTERN = YES;
+				GCC_UNROLL_LOOPS = YES;
+				LLVM_LTO = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_DISABLE_SAFETY_CHECKS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 			};
 			name = Release;
 		};
@@ -241,6 +297,7 @@
 				AA36A5BB1D5BA3DB002AE90E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
