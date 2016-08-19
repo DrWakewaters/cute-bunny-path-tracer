@@ -33,5 +33,6 @@ struct Triangle : CustomStringConvertible {
         self.rAbsorbance = rAbsorbance
         self.gAbsorbance = gAbsorbance
         self.bAbsorbance = bAbsorbance
+        self.diffuseReflectionProbability = diffuseReflectionProbability
     }
 }

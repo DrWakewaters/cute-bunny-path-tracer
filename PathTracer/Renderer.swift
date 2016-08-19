@@ -12,6 +12,8 @@ class Renderer {
     var passesPerPixel: Int
     var pixelsRendered: Int = 0
     var renderedPercent: Int = 0
+    var xRandom = [Double]()
+    var yRandom = [Double]()
     
     init() {
         var room = Room(retina: Vector3D(x: 500.0, y: 500.0, z: 1400.0), viewDirection: Vector3D(x: 0.0, y: 0.0, z: -1.0), viewWidth: 600, viewHeight: 600)
@@ -71,7 +73,11 @@ class Renderer {
         self.renderingGroup = dispatch_group_create()
         self.writeToSelfQueue = dispatch_queue_create("writeToSelfQueue", DISPATCH_QUEUE_SERIAL)
         self.writeToSelfGroup = dispatch_group_create()
-        self.passesPerPixel = 20000
+        self.passesPerPixel = 4
+        for i in 1...self.passesPerPixel {
+            self.xRandom.append(Halton.generate(i, 2))
+            self.yRandom.append(Halton.generate(i, 3))
+        }
     }
     
     // A photon interacts at a sphere. There will be reflection, transmission or absorption.
@@ -293,7 +299,7 @@ class Renderer {
         self.renderAll()
         self.writeToFile()
     }
-    
+
     func renderAll() {
         for i in 10..<40 {
             dispatch_group_async(self.renderingGroup, self.renderingQueue) {
@@ -316,6 +322,8 @@ class Renderer {
         for _ in 0..<self.passesPerPixel {
             let yRandom = Double(arc4random())/Double(UINT32_MAX) - 0.5
             let xRandom = Double(arc4random())/Double(UINT32_MAX) - 0.5
+            //let xRandom = self.xRandom[i] - 0.5
+            //let yRandom = self.yRandom[i] - 0.5
             let photon = Photon(position: Vector3D(x: Double(x), y: Double(y), z: 800.0), direction: normalised(Vector3D(x: Double(x)+xRandom, y: Double(y)+yRandom, z: 800.0) - self.room.retina))
             photons.append(photon)
         }
@@ -374,7 +382,7 @@ class Renderer {
                 if let filePath = file.path {
                     NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil)
                     if let cgImageDestination = CGImageDestinationCreateWithURL(file, kUTTypeBMP, 1, nil) {
-                        let providerRef = CGDataProviderCreateWithCFData(NSData(bytes: &pixelData, length: pixelData.count * sizeof(PixelData)))
+                        let providerRef = CGDataProviderCreateWithCFData(NSData(bytes: &self.pixelData, length: self.pixelData.count * sizeof(PixelData)))
                         if let cgImage = CGImageCreate(600, 600, 8, 32, 600 * sizeof(PixelData), CGColorSpaceCreateDeviceRGB(), CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedFirst.rawValue), providerRef, nil, true, CGColorRenderingIntent.RenderingIntentDefault) {
                             CGImageDestinationAddImage(cgImageDestination, cgImage, nil)
                             CGImageDestinationFinalize(cgImageDestination)
