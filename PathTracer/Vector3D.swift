@@ -61,15 +61,6 @@ func normalised(vector: Vector3D) -> Vector3D {
     return vector/norm(vector)
 }
 
-/*
-func normalise(inout vector: Vector3D) {
-    let k = 1.0/norm(vector)
-    vector.x = k*vector.x
-    vector.y = k*vector.y
-    vector.z = k*vector.z
-}
-*/
-
 // the vectors must be normalised!
 func angle(left: Vector3D, _ right: Vector3D) -> Double {
     return acos(left.x*right.x + left.y*right.y + left.z*right.z)

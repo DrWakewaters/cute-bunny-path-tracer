@@ -16,7 +16,7 @@
 		AA36A5C71D5BBD78002AE90E /* Room.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C61D5BBD78002AE90E /* Room.swift */; };
 		AA36A5C91D5BC45F002AE90E /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C81D5BC45F002AE90E /* Triangle.swift */; };
 		AA36A5CB1D5BCE10002AE90E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CA1D5BCE10002AE90E /* Renderer.swift */; };
-		AA36A5CD1D5BD089002AE90E /* PixelData.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CC1D5BD089002AE90E /* PixelData.swift */; };
+		AA36A5CD1D5BD089002AE90E /* PixelDatum.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CC1D5BD089002AE90E /* PixelDatum.swift */; };
 		AA6D22A11D67ADE90063A5A0 /* Halton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D22A01D67ADE90063A5A0 /* Halton.swift */; };
 		AA90D5151D62495600FFB0FA /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA90D5141D62495500FFB0FA /* Position.swift */; };
 /* End PBXBuildFile section */
@@ -44,7 +44,7 @@
 		AA36A5C61D5BBD78002AE90E /* Room.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Room.swift; sourceTree = "<group>"; };
 		AA36A5C81D5BC45F002AE90E /* Triangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		AA36A5CA1D5BCE10002AE90E /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
-		AA36A5CC1D5BD089002AE90E /* PixelData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelData.swift; sourceTree = "<group>"; };
+		AA36A5CC1D5BD089002AE90E /* PixelDatum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelDatum.swift; sourceTree = "<group>"; };
 		AA6D22A01D67ADE90063A5A0 /* Halton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Halton.swift; sourceTree = "<group>"; };
 		AA90D5141D62495500FFB0FA /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -83,7 +83,7 @@
 				AA36A5CA1D5BCE10002AE90E /* Renderer.swift */,
 				AA6D22A01D67ADE90063A5A0 /* Halton.swift */,
 				AA90D5141D62495500FFB0FA /* Position.swift */,
-				AA36A5CC1D5BD089002AE90E /* PixelData.swift */,
+				AA36A5CC1D5BD089002AE90E /* PixelDatum.swift */,
 				AA36A5C61D5BBD78002AE90E /* Room.swift */,
 				AA36A5C81D5BC45F002AE90E /* Triangle.swift */,
 				AA36A5C41D5BA584002AE90E /* Lightsource.swift */,
@@ -162,7 +162,7 @@
 				AA36A5C31D5BA535002AE90E /* Photon.swift in Sources */,
 				AA36A5B61D5BA3DB002AE90E /* main.swift in Sources */,
 				AA36A5CB1D5BCE10002AE90E /* Renderer.swift in Sources */,
-				AA36A5CD1D5BD089002AE90E /* PixelData.swift in Sources */,
+				AA36A5CD1D5BD089002AE90E /* PixelDatum.swift in Sources */,
 				AA36A5C91D5BC45F002AE90E /* Triangle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

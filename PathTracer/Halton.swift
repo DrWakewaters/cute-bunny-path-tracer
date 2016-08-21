@@ -1,5 +1,3 @@
-import Foundation
-
 struct Halton {
     static func generate(index: Int, _ base: Int) -> Double {
         var result: Double = 0.0

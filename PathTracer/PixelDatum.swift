@@ -1,6 +1,4 @@
-import Foundation
-
-struct PixelData : CustomStringConvertible {
+struct PixelDatum : CustomStringConvertible {
     var a: UInt8
     var r: UInt8
     var g: UInt8

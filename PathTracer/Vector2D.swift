@@ -1,5 +1,3 @@
-import Foundation
-
 struct Vector2D : CustomStringConvertible {
     var x: Double
     var y: Double

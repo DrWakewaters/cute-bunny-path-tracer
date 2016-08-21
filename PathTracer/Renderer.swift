@@ -3,20 +3,23 @@ import CoreImage
 
 class Renderer {
     var room: Room
-    var pixelData: [PixelData]
-    var detectedPhotons: [[Photon]]
+    var pixelData: [[PixelDatum]]
     var renderingQueue: dispatch_queue_t
     var renderingGroup: dispatch_group_t
     var writeToSelfQueue: dispatch_queue_t
     var writeToSelfGroup: dispatch_group_t
-    var passesPerPixel: Int
-    var pixelsRendered: Int = 0
+    var passesPerPixel: Int = 8
+    var rowsRendered: Int = 0
     var renderedPercent: Int = 0
+    var pixelsPerPoint = 2
     var xRandom = [Double]()
     var yRandom = [Double]()
     
     init() {
-        var room = Room(retina: Vector3D(x: 500.0, y: 500.0, z: 1400.0), viewDirection: Vector3D(x: 0.0, y: 0.0, z: -1.0), viewWidth: 600, viewHeight: 600)
+        let (viewXMin, viewXMax, viewYMin, viewYMax) = (100, 900, 200, 800)
+        let xRetina = (viewXMin + viewXMax)/2
+        let yRetina = (viewYMin + viewYMax)/2
+        var room = Room(retina: Vector3D(x: Double(xRetina), y: Double(yRetina), z: 1400.0), viewDirection: Vector3D(x: 0.0, y: 0.0, z: -1.0), viewXMin: viewXMin, viewXMax: viewXMax, viewYMin: viewYMin, viewYMax: viewYMax)
         let cornerNodes = [Vector3D(x: 0, y: 0, z: 0), Vector3D(x: 1000, y: 0, z: 0), Vector3D(x: 1000, y: 1000, z: 0), Vector3D(x: 0, y: 1000, z: 0), Vector3D(x: 0, y: 0, z: 1000), Vector3D(x: 1000, y: 0, z: 1000), Vector3D(x: 1000, y: 1000, z: 1000), Vector3D(x: 0, y: 1000, z: 1000)]
         let lightNodes = [Vector3D(x: 350, y: 1000, z: 350), Vector3D(x: 350, y: 1000, z: 650), Vector3D(x: 650, y: 1000, z: 650), Vector3D(x: 650, y: 1000, z: 350), Vector3D(x: 350, y: 1500, z: 350), Vector3D(x: 350, y: 1500, z: 650), Vector3D(x: 650, y: 1500, z: 650), Vector3D(x: 650, y: 1500, z: 350)]
         let extraNodes = [Vector3D(x: 350, y: 1000, z: 0), Vector3D(x: 350, y: 1000, z: 1000), Vector3D(x: 650, y: 1000, z: 1000), Vector3D(x: 650, y: 1000, z: 0)]
@@ -67,13 +70,15 @@ class Renderer {
         room.spheres.append(Sphere(refractiveIndex: 2.0, radius: 200, position: Vector3D(x: 300.0, y: 400.0, z: 400.0), rAbsorbanceReflection: 0.3, gAbsorbanceReflection: 0.05, bAbsorbanceReflection: 0.3, rAbsorbanceTransmittancePerPixel: 0.0003, gAbsorbanceTransmittancePerPixel: 0.00005, bAbsorbanceTransmittancePerPixel: 0.0003, diffuseReflectionProbability: 0.02, isOpaque: false))
         room.spheres.append(Sphere(refractiveIndex: 1.0, radius: 200, position: Vector3D(x: 750.0, y: 300.0, z: 400.0), rAbsorbanceReflection: 0.1, gAbsorbanceReflection: 0.1, bAbsorbanceReflection: 0.7, rAbsorbanceTransmittancePerPixel: 0.0, gAbsorbanceTransmittancePerPixel: 0.0, bAbsorbanceTransmittancePerPixel: 0.0, diffuseReflectionProbability: 0.0, isOpaque: true))
         self.room = room
-        self.pixelData = [PixelData](count: 600 * 600, repeatedValue: PixelData(a: 255, r: 0, g: 0, b: 0))
-        self.detectedPhotons = [[Photon]](count: 600 * 600, repeatedValue: [Photon]())
+        let viewWidth = viewXMax - viewXMin
+        let viewHeight = viewYMax - viewYMin
+        let numberOfPixelsInARow = self.pixelsPerPoint*viewWidth
+        let numberOfPixelsInAColumn = self.pixelsPerPoint*viewHeight
+        self.pixelData = [[PixelDatum]](count: numberOfPixelsInARow, repeatedValue: [PixelDatum](count: numberOfPixelsInAColumn, repeatedValue: PixelDatum(a: 255, r: 0, g: 0, b: 0)))
         self.renderingQueue = dispatch_queue_create("renderingQueue", DISPATCH_QUEUE_CONCURRENT)
         self.renderingGroup = dispatch_group_create()
         self.writeToSelfQueue = dispatch_queue_create("writeToSelfQueue", DISPATCH_QUEUE_SERIAL)
         self.writeToSelfGroup = dispatch_group_create()
-        self.passesPerPixel = 4
         for i in 1...self.passesPerPixel {
             self.xRandom.append(Halton.generate(i, 2))
             self.yRandom.append(Halton.generate(i, 3))
@@ -298,15 +303,18 @@ class Renderer {
     func render() {
         self.renderAll()
         self.writeToFile()
+        self.writeToPPMFile()
     }
 
     func renderAll() {
-        for i in 10..<40 {
+        let heightPoints = self.room.viewHeight*self.pixelsPerPoint
+        let widthPoints = self.room.viewWidth*self.pixelsPerPoint
+        for yIndex in 0..<heightPoints {
             dispatch_group_async(self.renderingGroup, self.renderingQueue) {
-                for y in 20*i..<20*(i+1) {
-                    for x in 200..<800 {
-                        self.renderPixel(x, y)
-                    }
+                for xIndex in 0..<widthPoints {
+                    let x = Double(self.room.viewXMin) + Double(xIndex)/Double(self.pixelsPerPoint)
+                    let y = Double(self.room.viewYMin) + Double(yIndex)/Double(self.pixelsPerPoint)
+                    self.renderPixel(x: x, y: y, xIndex: xIndex, yIndex: yIndex)
                 }
             }
         }
@@ -314,76 +322,85 @@ class Renderer {
         dispatch_group_wait(self.writeToSelfGroup, DISPATCH_TIME_FOREVER)
     }
     
-    func renderPixel(x: Int, _ y: Int) {
-        let (pixelX, pixelY) = (x-200, 599-(y-200))
-        var photons = [Photon]()
-        var detectedPhotons = [Photon]()
-        var positions = [Position]()
-        for _ in 0..<self.passesPerPixel {
-            let yRandom = Double(arc4random())/Double(UINT32_MAX) - 0.5
-            let xRandom = Double(arc4random())/Double(UINT32_MAX) - 0.5
-            //let xRandom = self.xRandom[i] - 0.5
-            //let yRandom = self.yRandom[i] - 0.5
-            let photon = Photon(position: Vector3D(x: Double(x), y: Double(y), z: 800.0), direction: normalised(Vector3D(x: Double(x)+xRandom, y: Double(y)+yRandom, z: 800.0) - self.room.retina))
-            photons.append(photon)
-        }
-        for i in 0..<self.passesPerPixel {
-            var photon = photons[i]
-            let detected = self.trace(self.room, photon: &photon)
-            if detected {
-                detectedPhotons.append(photon)
-                positions.append(Position(x: pixelX, y: pixelY))
-            }
-        }
-        dispatch_group_async(self.writeToSelfGroup, self.writeToSelfQueue) {
-            self.writeSingelPixelData(detectedPhotons, index: pixelY*600 + pixelX)
-            self.pixelsRendered += 1
-            let renderedPercent = (100*self.pixelsRendered)/(self.room.viewHeight*self.room.viewWidth)
-            if renderedPercent > self.renderedPercent {
-                self.renderedPercent = renderedPercent
-                print("Rendered \(self.renderedPercent) %.")
-            }
-        }
-    }
-    
-    func writeSingelPixelData(detectedPhotons: [Photon], index: Int) {
+    func renderPixel(x x: Double, y: Double, xIndex: Int, yIndex: Int) {
         var r: Double = 0.0
         var g: Double = 0.0
         var b: Double = 0.0
-        for photon in detectedPhotons {
-            r += photon.rIntensity
-            g += photon.gIntensity
-            b += photon.bIntensity
+        for _ in 0..<self.passesPerPixel {
+            let yRandom = (Double(arc4random())/Double(UINT32_MAX) - 0.5)/Double(self.passesPerPixel)
+            let xRandom = (Double(arc4random())/Double(UINT32_MAX) - 0.5)/Double(self.passesPerPixel)
+            //let xRandom = self.xRandom[i] - 0.5
+            //let yRandom = self.yRandom[i] - 0.5
+            var photon = Photon(position: Vector3D(x: x, y: y, z: 800.0), direction: normalised(Vector3D(x: x+xRandom, y: y+yRandom, z: 800.0) - self.room.retina))
+            let detected = self.trace(self.room, photon: &photon)
+            if detected {
+                r += photon.rIntensity
+                g += photon.gIntensity
+                b += photon.bIntensity
+            }
         }
-        r = r/Double(passesPerPixel)
-        g = g/Double(passesPerPixel)
-        b = b/Double(passesPerPixel)
+        r = r/Double(self.passesPerPixel)
+        g = g/Double(self.passesPerPixel)
+        b = b/Double(self.passesPerPixel)
         r = sqrt(2.0/(1.0+exp(-1.0*r/0.05))-1)
         g = sqrt(2.0/(1.0+exp(-1.0*g/0.05))-1)
         b = sqrt(2.0/(1.0+exp(-1.0*b/0.05))-1)
-        if r > 1.0 {
-            r = 1.0
+        self.pixelData[xIndex][yIndex].r = UInt8(255.0*r)
+        self.pixelData[xIndex][yIndex].g = UInt8(255.0*g)
+        self.pixelData[xIndex][yIndex].b = UInt8(255.0*b)
+        // Don't add to many blocks to the serial queue; that'll eat memory.
+        // Count the number of rendered rows instead of pixels.
+        if xIndex == 0 {
+            dispatch_group_async(self.writeToSelfGroup, self.writeToSelfQueue) {
+                self.rowsRendered += 1
+                let renderedPercent = (100*self.rowsRendered)/(self.room.viewHeight*self.pixelsPerPoint)
+                if renderedPercent > self.renderedPercent {
+                    self.renderedPercent = renderedPercent
+                    print("Rendered \(self.renderedPercent) %.")
+                }
+            }
         }
-        if g > 1.0 {
-            g = 1.0
+    }
+    
+    func writeToPPMFile() {
+        if let directory = NSFileManager.defaultManager().URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask).last {
+            if directory.path != nil {
+                let fileURL = directory.URLByAppendingPathComponent("image.ppm")
+                if let filePath = fileURL.path {
+                    NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil)
+                    var string = "P3 \(self.room.viewWidth*self.pixelsPerPoint) \(self.room.viewHeight*self.pixelsPerPoint) 255\n"
+                    for yIndex in 0..<self.room.viewHeight*self.pixelsPerPoint {
+                        for xIndex in 0..<self.room.viewWidth*self.pixelsPerPoint {
+                            let pixelDatum = self.pixelData[xIndex][self.room.viewHeight*self.pixelsPerPoint-1-yIndex]
+                            string += "\(pixelDatum.r) \(pixelDatum.g) \(pixelDatum.b) "
+                        }
+                        string += "\n"
+                    }
+                    do {
+                        try string.writeToFile(filePath, atomically: true, encoding: NSUTF8StringEncoding)
+                    } catch {
+                        
+                    }
+                }
+            }
         }
-        if b > 1.0 {
-            b = 1.0
-        }
-        self.pixelData[index].r = UInt8(255.0*r)
-        self.pixelData[index].g = UInt8(255.0*g)
-        self.pixelData[index].b = UInt8(255.0*b)
     }
     
     func writeToFile() {
+        var pixelDataOneDimensional = [PixelDatum]()
+        for y in 0..<self.room.viewHeight*self.pixelsPerPoint {
+            for x in 0..<self.room.viewWidth*self.pixelsPerPoint {
+                pixelDataOneDimensional.append(self.pixelData[x][self.room.viewHeight*self.pixelsPerPoint-1-y])
+            }
+        }
         if let directory = NSFileManager.defaultManager().URLsForDirectory(NSSearchPathDirectory.DocumentDirectory, inDomains: NSSearchPathDomainMask.UserDomainMask).last {
             if directory.path != nil {
                 let file = directory.URLByAppendingPathComponent("image.bmp")
                 if let filePath = file.path {
                     NSFileManager.defaultManager().createFileAtPath(filePath, contents: nil, attributes: nil)
                     if let cgImageDestination = CGImageDestinationCreateWithURL(file, kUTTypeBMP, 1, nil) {
-                        let providerRef = CGDataProviderCreateWithCFData(NSData(bytes: &self.pixelData, length: self.pixelData.count * sizeof(PixelData)))
-                        if let cgImage = CGImageCreate(600, 600, 8, 32, 600 * sizeof(PixelData), CGColorSpaceCreateDeviceRGB(), CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedFirst.rawValue), providerRef, nil, true, CGColorRenderingIntent.RenderingIntentDefault) {
+                        let providerRef = CGDataProviderCreateWithCFData(NSData(bytes: &pixelDataOneDimensional, length: pixelDataOneDimensional.count * sizeof(PixelDatum)))
+                        if let cgImage = CGImageCreate(self.room.viewWidth*self.pixelsPerPoint, self.room.viewHeight*self.pixelsPerPoint, 8, 32, self.room.viewWidth*self.pixelsPerPoint*sizeof(PixelDatum), CGColorSpaceCreateDeviceRGB(), CGBitmapInfo(rawValue: CGImageAlphaInfo.PremultipliedFirst.rawValue), providerRef, nil, true, CGColorRenderingIntent.RenderingIntentDefault) {
                             CGImageDestinationAddImage(cgImageDestination, cgImage, nil)
                             CGImageDestinationFinalize(cgImageDestination)
                         }
@@ -393,4 +410,3 @@ class Renderer {
         }
     }
 }
-

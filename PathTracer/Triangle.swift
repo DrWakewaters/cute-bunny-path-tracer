@@ -1,5 +1,3 @@
-import Foundation
-
 struct Triangle : CustomStringConvertible {
     var firstNode: Vector3D
     var secondNode: Vector3D

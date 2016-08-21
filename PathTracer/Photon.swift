@@ -1,5 +1,3 @@
-import Foundation
-
 struct Photon : CustomStringConvertible {
     var rIntensity: Double = 1.0
     var gIntensity: Double = 1.0

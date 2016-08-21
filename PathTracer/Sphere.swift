@@ -1,5 +1,3 @@
-import Foundation
-
 // FIXME: change from per pixel to per unit length (add info about pixels per unit length)
 struct Sphere {
     var refractiveIndex: Double
