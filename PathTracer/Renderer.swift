@@ -8,7 +8,7 @@ class Renderer {
     var renderingGroup: dispatch_group_t
     var writeToSelfQueue: dispatch_queue_t
     var writeToSelfGroup: dispatch_group_t
-    var passesPerPixel: Int = 8
+    var passesPerPixel: Int = 2
     var rowsRendered: Int = 0
     var renderedPercent: Int = 0
     var pixelsPerPoint = 2
@@ -16,7 +16,7 @@ class Renderer {
     var yRandom = [Double]()
     
     init() {
-        let (viewXMin, viewXMax, viewYMin, viewYMax) = (100, 900, 200, 800)
+        let (viewXMin, viewXMax, viewYMin, viewYMax) = (200, 800, 200, 800)
         let xRetina = (viewXMin + viewXMax)/2
         let yRetina = (viewYMin + viewYMax)/2
         var room = Room(retina: Vector3D(x: Double(xRetina), y: Double(yRetina), z: 1400.0), viewDirection: Vector3D(x: 0.0, y: 0.0, z: -1.0), viewXMin: viewXMin, viewXMax: viewXMax, viewYMin: viewYMin, viewYMax: viewYMax)
@@ -25,50 +25,53 @@ class Renderer {
         let extraNodes = [Vector3D(x: 350, y: 1000, z: 0), Vector3D(x: 350, y: 1000, z: 1000), Vector3D(x: 650, y: 1000, z: 1000), Vector3D(x: 650, y: 1000, z: 0)]
         let diffuseReflectionProbability = 0.92
         // the lightsource
-        room.lightsources.append(Triangle(firstNode: lightNodes[4], secondNode: lightNodes[7], thirdNode: lightNodes[6], rAbsorbance: 0.0, gAbsorbance: 0.0, bAbsorbance: 0.0, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.lightsources.append(Triangle(firstNode: lightNodes[4], secondNode: lightNodes[6], thirdNode: lightNodes[5], rAbsorbance: 0.0, gAbsorbance: 0.0, bAbsorbance: 0.0, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.lightsources.append(Triangle(firstNode: lightNodes[4], secondNode: lightNodes[7], thirdNode: lightNodes[6], rAbsorbance: 0.0, gAbsorbance: 0.0, bAbsorbance: 0.0, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: true))
+        room.lightsources.append(Triangle(firstNode: lightNodes[4], secondNode: lightNodes[6], thirdNode: lightNodes[5], rAbsorbance: 0.0, gAbsorbance: 0.0, bAbsorbance: 0.0, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: true))
         // xy-plane
-        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[1], thirdNode: cornerNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[2], thirdNode: cornerNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[1], thirdNode: cornerNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[2], thirdNode: cornerNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xz-plane
-        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[4], thirdNode: cornerNodes[5], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[5], thirdNode: cornerNodes[1], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[4], thirdNode: cornerNodes[5], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[5], thirdNode: cornerNodes[1], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // yz-plane
-        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[3], thirdNode: cornerNodes[7], rAbsorbance: 0.05, gAbsorbance: 0.6, bAbsorbance: 0.6, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[7], thirdNode: cornerNodes[4], rAbsorbance: 0.05, gAbsorbance: 0.6, bAbsorbance: 0.6, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[3], thirdNode: cornerNodes[7], rAbsorbance: 0.05, gAbsorbance: 0.5, bAbsorbance: 0.5, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[0], secondNode: cornerNodes[7], thirdNode: cornerNodes[4], rAbsorbance: 0.05, gAbsorbance: 0.5, bAbsorbance: 0.5, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // yz-plane with x=1000
-        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[2], thirdNode: cornerNodes[1], rAbsorbance: 0.6, gAbsorbance: 0.6, bAbsorbance: 0.05, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[1], thirdNode: cornerNodes[5], rAbsorbance: 0.6, gAbsorbance: 0.6, bAbsorbance: 0.05, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[2], thirdNode: cornerNodes[1], rAbsorbance: 0.5, gAbsorbance: 0.5, bAbsorbance: 0.05, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[1], thirdNode: cornerNodes[5], rAbsorbance: 0.5, gAbsorbance: 0.5, bAbsorbance: 0.05, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xz-plane with y=1000; x > 650
-        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: extraNodes[2], thirdNode: extraNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: extraNodes[3], thirdNode: cornerNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: extraNodes[2], thirdNode: extraNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: extraNodes[3], thirdNode: cornerNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xz-plane with y=1000, x < 350
-        room.surfaces.append(Triangle(firstNode: cornerNodes[7], secondNode: cornerNodes[3], thirdNode: extraNodes[0], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[7], secondNode: extraNodes[0], thirdNode: extraNodes[1], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[7], secondNode: cornerNodes[3], thirdNode: extraNodes[0], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[7], secondNode: extraNodes[0], thirdNode: extraNodes[1], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xz-plane with y=1000, 350<x<650, 650<z<1000
-        room.surfaces.append(Triangle(firstNode: extraNodes[1], secondNode: lightNodes[1], thirdNode: lightNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: extraNodes[1], secondNode: lightNodes[2], thirdNode: extraNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: extraNodes[1], secondNode: lightNodes[1], thirdNode: lightNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: extraNodes[1], secondNode: lightNodes[2], thirdNode: extraNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xz-plane with y=1000, 350<x<650, 0<z<350
-        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: extraNodes[0], thirdNode: extraNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: extraNodes[3], thirdNode: lightNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: extraNodes[0], thirdNode: extraNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: extraNodes[3], thirdNode: lightNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xy-plane with z=350, 350<x<650, 1000<y<1500
-        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: lightNodes[3], thirdNode: lightNodes[7], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: lightNodes[7], thirdNode: lightNodes[4], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: lightNodes[3], thirdNode: lightNodes[7], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: lightNodes[0], secondNode: lightNodes[7], thirdNode: lightNodes[4], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // yz-plane with x=350, 350<z<650, 1000<y<1500
-        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[1], thirdNode: lightNodes[0], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[0], thirdNode: lightNodes[4], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[1], thirdNode: lightNodes[0], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[0], thirdNode: lightNodes[4], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xy-plane with z=650, 350<x<650, 1000<y<1500
-        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[6], thirdNode: lightNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[2], thirdNode: lightNodes[1], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[6], thirdNode: lightNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: lightNodes[5], secondNode: lightNodes[2], thirdNode: lightNodes[1], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // yz-plane with x=650, 350<z<650, 1000<y<1500
-        room.surfaces.append(Triangle(firstNode: lightNodes[6], secondNode: lightNodes[7], thirdNode: lightNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: lightNodes[6], secondNode: lightNodes[3], thirdNode: lightNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
+        room.surfaces.append(Triangle(firstNode: lightNodes[6], secondNode: lightNodes[7], thirdNode: lightNodes[3], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: lightNodes[6], secondNode: lightNodes[3], thirdNode: lightNodes[2], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
         // xy-plane with z=1000
-        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[5], thirdNode: cornerNodes[4], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[4], thirdNode: cornerNodes[7], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability))
-        // a sphere
-        room.spheres.append(Sphere(refractiveIndex: 2.0, radius: 200, position: Vector3D(x: 300.0, y: 400.0, z: 400.0), rAbsorbanceReflection: 0.3, gAbsorbanceReflection: 0.05, bAbsorbanceReflection: 0.3, rAbsorbanceTransmittancePerPixel: 0.0003, gAbsorbanceTransmittancePerPixel: 0.00005, bAbsorbanceTransmittancePerPixel: 0.0003, diffuseReflectionProbability: 0.02, isOpaque: false))
-        room.spheres.append(Sphere(refractiveIndex: 1.0, radius: 200, position: Vector3D(x: 750.0, y: 300.0, z: 400.0), rAbsorbanceReflection: 0.1, gAbsorbanceReflection: 0.1, bAbsorbanceReflection: 0.7, rAbsorbanceTransmittancePerPixel: 0.0, gAbsorbanceTransmittancePerPixel: 0.0, bAbsorbanceTransmittancePerPixel: 0.0, diffuseReflectionProbability: 0.0, isOpaque: true))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[5], thirdNode: cornerNodes[4], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        room.surfaces.append(Triangle(firstNode: cornerNodes[6], secondNode: cornerNodes[4], thirdNode: cornerNodes[7], rAbsorbance: 0.25, gAbsorbance: 0.25, bAbsorbance: 0.25, diffuseReflectionProbability: diffuseReflectionProbability, aLightsource: false))
+        // a shpere made of glass
+        room.spheres.append(Sphere(refractiveIndex: 2.0, radius: 200.0, position: Vector3D(x: 300.0, y: 400.0, z: 400.0), rAbsorbanceDuringReflection: 0.06, gAbsorbanceDuringReflection: 0.01, bAbsorbanceDuringReflection: 0.06, rAbsorbanceDuringTransmittancePerPoint: 0.00015, gAbsorbanceDuringTransmittancePerPoint: 0.000025, bAbsorbanceDuringTransmittancePerPoint: 0.00015, diffuseReflectionProbability: 0.01, isOpaque: false, aLightsource: false))
+        // a small sphere made of glass
+        room.spheres.append(Sphere(refractiveIndex: 4.0, radius: 50.0, position: Vector3D(x: 250.0, y: 150.0, z: 450.0), rAbsorbanceDuringReflection: 0.0, gAbsorbanceDuringReflection: 0.0, bAbsorbanceDuringReflection: 0.0, rAbsorbanceDuringTransmittancePerPoint: 0.0, gAbsorbanceDuringTransmittancePerPoint: 0.0, bAbsorbanceDuringTransmittancePerPoint: 0.0, diffuseReflectionProbability: 0.0, isOpaque: false, aLightsource: false))
+        // a sphere made of gold
+        room.spheres.append(Sphere(refractiveIndex: 1.0, radius: 200.0, position: Vector3D(x: 750.0, y: 300.0, z: 400.0), rAbsorbanceDuringReflection: 0.1, gAbsorbanceDuringReflection: 0.1, bAbsorbanceDuringReflection: 0.7, rAbsorbanceDuringTransmittancePerPoint: 0.0, gAbsorbanceDuringTransmittancePerPoint: 0.0, bAbsorbanceDuringTransmittancePerPoint: 0.0, diffuseReflectionProbability: 0.0, isOpaque: true, aLightsource: false))
         self.room = room
         let viewWidth = viewXMax - viewXMin
         let viewHeight = viewYMax - viewYMin
@@ -85,104 +88,10 @@ class Renderer {
         }
     }
     
-    // A photon interacts at a sphere. There will be reflection, transmission or absorption.
-    // See http://graphics.stanford.edu/courses/cs148-10-summer/docs/2006--degreve--reflection_refraction.pdf
-    func photonIntersectionAtSphere(room: Room, inout photon: Photon, sphereIntersection: Vector3D, sphereNormal: Vector3D, sphere: Sphere) -> Bool {
-        // Russian roulette. There is a 25 % chance that a photon with very low intensity is removed. If not: increase its intensity.
-        if photon.intensity < 0.02 {
-            if Double(arc4random())/Double(UINT32_MAX) < 0.25 {
-                return true
-            } else {
-                photon.rIntensity *= 4
-                photon.gIntensity *= 4
-                photon.bIntensity *= 4
-            }
-        }
-        let distance = norm(photon.position-sphereIntersection)
-        photon.position = sphereIntersection
-        let isInsideSphere: Bool
-        var eta1: Double
-        var eta2: Double
-        if photon.direction*sphereNormal > 0 {
-            isInsideSphere = true
-        } else {
-            isInsideSphere = false
-        }
-        if isInsideSphere {
-            eta1 = sphere.refractiveIndex
-            eta2 = 1.0
-        } else {
-            eta1 = 1.0
-            eta2 = sphere.refractiveIndex
-        }
-        let etaQuotient = (eta1/eta2)
-        var cosThetaI = photon.direction*sphereNormal
-        if cosThetaI < 0.0 {
-            cosThetaI *= -1
-        }
-        let sinThetaTSquared = etaQuotient*etaQuotient*(1-cosThetaI*cosThetaI)
-        // Diffuse reflection.
-        if Double(arc4random())/Double(UINT32_MAX) < sphere.diffuseReflectionProbability {
-            // theta is the angle from the normal, phi the other angle needed to specify the direction
-            let theta = asin(Double(arc4random())/Double(UINT32_MAX)) // [0, pi/2]
-            let phi = 2.0*M_PI*Double(arc4random())/Double(UINT32_MAX) // [0, 2pi]
-            // Pick a point in the tangent plane. FIXME: make sure an x and y is picked that is in the plane.
-            let x = Double(arc4random())/Double(UINT32_MAX)
-            let y = Double(arc4random())/Double(UINT32_MAX)
-            let z = sphereIntersection*sphereNormal - x*sphereNormal.x - y*sphereNormal.y
-            let p = Vector3D(x: x, y: y, z: z)
-            // Let zPlane be the normal to the and let xPlane and yPlane be two vectors in the tangent plane;
-            // they form an orthonormal coordinate system.
-            let zPlane = sphereNormal
-            let xPlane = normalised(p - sphereIntersection)
-            let yPlane = zPlane**xPlane
-            let vec = Vector3D(x: sin(theta)*cos(phi), y: sin(theta)*sin(phi), z: cos(theta))
-            photon.direction = normalised(vec.x*xPlane + vec.y*yPlane + vec.z*zPlane) // normalisation not needed?
-            photon.rIntensity *= (1-sphere.rAbsorbanceReflection)
-            photon.gIntensity *= (1-sphere.gAbsorbanceReflection)
-            photon.bIntensity *= (1-sphere.bAbsorbanceReflection)
-            return false
-        }
-        // Mirror-like reflection or transmission. Not total internal reflection.
-        if sinThetaTSquared <= 1 {
-            let cosThetaT = sqrt(1.0 - sinThetaTSquared*sinThetaTSquared)
-            let rVerticalSqrt = (eta1*cosThetaI - eta2*cosThetaT)/(eta1*cosThetaI + eta2*cosThetaT)
-            let rVertical = rVerticalSqrt*rVerticalSqrt
-            let rHorizontalSqrt = (eta2*cosThetaI - eta1*cosThetaT)/(eta2*cosThetaI + eta1*cosThetaT)
-            let rHorizontal = rHorizontalSqrt*rHorizontalSqrt
-            let R = (rVertical + rHorizontal)/2.0
-            // Reflection
-            if Double(arc4random())/Double(UINT32_MAX) <= R || sphere.isOpaque {
-                photon.direction = normalised(photon.direction - 2.0*(photon.direction*sphereNormal)*sphereNormal)
-                photon.rIntensity *= (1.0-sphere.rAbsorbanceReflection)
-                photon.gIntensity *= (1.0-sphere.gAbsorbanceReflection)
-                photon.bIntensity *= (1.0-sphere.bAbsorbanceReflection)
-            // Transmission
-            } else {
-                photon.direction = (etaQuotient*photon.direction) + (etaQuotient*cosThetaI-sqrt(1-sinThetaTSquared))*sphereNormal
-                if isInsideSphere {
-                    photon.rIntensity *= pow(1.0-sphere.rAbsorbanceTransmittancePerPixel, distance)
-                    photon.gIntensity *= pow(1.0-sphere.gAbsorbanceTransmittancePerPixel, distance)
-                    photon.bIntensity *= pow(1.0-sphere.bAbsorbanceTransmittancePerPixel, distance)
-                }
-            }
-        // Total internal reflection.
-        } else {
-            photon.direction = photon.direction - 2.0*(photon.direction*sphereNormal)*sphereNormal
-            photon.rIntensity *= pow(1.0-sphere.rAbsorbanceTransmittancePerPixel, distance)
-            photon.gIntensity *= pow(1.0-sphere.gAbsorbanceTransmittancePerPixel, distance)
-            photon.bIntensity *= pow(1.0-sphere.bAbsorbanceTransmittancePerPixel, distance)
-
-        }
-        photon.direction = normalised(photon.direction)
-        return false
-    }
-    
-    func findClosestIntersectedSphere(room: Room, inout photon: Photon) -> (Double, Vector3D?, Vector3D?, Sphere?) {
+    func findClosestIntersectedSphere(room: Room, photon: Photon) -> (intersectionDatum: IntersectionDatum, rayIntersectable: RayIntersectable)? {
         var closestDistance = Double.infinity
-        var intersection: Vector3D?
-        var normal: Vector3D?
-        var closestSphere: Sphere?
+        var intersectionDatum: IntersectionDatum?
+        var intersectionSphere: Sphere?
         for sphere in room.spheres {
             let p = photon.direction*(photon.position-sphere.position)
             let a = p*p - square(photon.position - sphere.position) + sphere.radius*sphere.radius
@@ -195,24 +104,24 @@ class Renderer {
             // (The distance might not be negative - that would be in the wrong direction.)
             if d2 > 1e-7 && d2 < closestDistance {
                 closestDistance = d2
-                closestSphere = sphere
-                intersection = d2*photon.direction + photon.position
-                normal = normalised(intersection! - sphere.position)
+                intersectionDatum = IntersectionDatum(distance: closestDistance, intersection: d2*photon.direction + photon.position, normal: normalised(d2*photon.direction + photon.position - sphere.position))
+                intersectionSphere = sphere
             } else if d1 > 1e-7 && d1 < closestDistance {
                 closestDistance = d1
-                closestSphere = sphere
-                intersection = d1*photon.direction + photon.position
-                normal = normalised(intersection! - sphere.position)
+                intersectionDatum = IntersectionDatum(distance: closestDistance, intersection: d1*photon.direction + photon.position, normal: normalised(d1*photon.direction + photon.position - sphere.position))
+                intersectionSphere = sphere
             }
         }
-        return (closestDistance, intersection, normal, closestSphere)
+        if let intersectionDatum = intersectionDatum, let intersectionSphere = intersectionSphere  {
+            return (intersectionDatum, intersectionSphere)
+        }
+        return nil
     }
  
-    func findClosestIntersectedTriangle(room: Room, inout photon: Photon, triangles: [Triangle]) -> (Double, Vector3D?, Vector3D?, Triangle?) {
+    func findClosestIntersectedTriangle(room: Room, photon: Photon, triangles: [Triangle]) -> (intersectionDatum: IntersectionDatum, rayIntersectable: RayIntersectable)? {
         var closestDistance = Double.infinity
-        var intersection: Vector3D?
-        var normal: Vector3D?
-        var closestTriangle: Triangle?
+        var intersectionDatum: IntersectionDatum?
+        var intersectionTriangle: Triangle?
         for triangle in triangles {
             let d = ((triangle.firstNode - photon.position)*triangle.normal)/(photon.direction*triangle.normal)
             // 1e-7 rather than 0 to avoid intersecting twice; consider finding a better method.
@@ -226,82 +135,66 @@ class Renderer {
                 let t = (triangle.uv*wu - triangle.uu*wv)/triangle.denom
                 if s >= 0 && t >= 0 && s+t <= 1 {
                     closestDistance = d
-                    intersection = d*photon.direction + photon.position
-                    normal = triangle.normal
-                    closestTriangle = triangle
+                    intersectionDatum = IntersectionDatum(distance: closestDistance, intersection: d*photon.direction + photon.position, normal: triangle.normal)
+                    intersectionTriangle = triangle
                 }
             }
         }
-        return (closestDistance, intersection, normal, closestTriangle)
+        if let intersectionDatum = intersectionDatum, let intersectionTriangle = intersectionTriangle  {
+            return (intersectionDatum, intersectionTriangle)
+        }
+        return nil
     }
     
-    func photonIntersectionAtTriangle(room: Room, inout photon: Photon, triangleIntersection: Vector3D, triangleNormal: Vector3D, triangle: Triangle) -> Bool {
-        photon.position = triangleIntersection
-        photon.rIntensity *= (1.0-triangle.rAbsorbance)
-        photon.gIntensity *= (1.0-triangle.gAbsorbance)
-        photon.bIntensity *= (1.0-triangle.bAbsorbance)
-        // Russian roulette. There is a 25 % chance that a photon with very low intensity is removed. If not: increase its intensity.
-        if photon.intensity < 0.02 {
-            if Double(arc4random())/Double(UINT32_MAX) < 0.25 {
-                return true
-            } else {
-                photon.rIntensity *= 4
-                photon.gIntensity *= 4
-                photon.bIntensity *= 4
+    func findClosestIntersectedObject(room: Room, photon: Photon) -> (intersectionDatum: IntersectionDatum, rayIntersectable: RayIntersectable)? {
+        var intersectionInformations = [(intersectionDatum: IntersectionDatum, rayIntersectable: RayIntersectable)]()
+        let triangleInformation = self.findClosestIntersectedTriangle(room, photon: photon, triangles: room.surfaces)
+        if let triangleInformation = triangleInformation {
+            intersectionInformations.append(triangleInformation)
+        }
+        let sphereInformation = self.findClosestIntersectedSphere(room, photon: photon)
+        if let sphereInformation = sphereInformation {
+            intersectionInformations.append(sphereInformation)
+        }
+        let lightsourceInformation = self.findClosestIntersectedTriangle(room, photon: photon, triangles: room.lightsources)
+        if let lightsourceInformation = lightsourceInformation {
+            intersectionInformations.append(lightsourceInformation)
+        }
+        if intersectionInformations.count == 0 {
+            return nil
+        }
+        var closestIntersectionInformation = intersectionInformations[0]
+        for intersectionInformation in intersectionInformations {
+            if intersectionInformation.intersectionDatum.distance < closestIntersectionInformation.intersectionDatum.distance {
+                closestIntersectionInformation = intersectionInformation
             }
         }
-        // Mirror-like reflection.
-        if Double(arc4random())/Double(UINT32_MAX) < (1.0-triangle.diffuseReflectionProbability) {
-            // FIXME store trianglenormal^2 in the triangle
-            photon.direction = normalised(photon.direction - 2.0*(photon.direction*triangleNormal)*(triangleNormal))
-            return true
-        }
-        // Diffuse reflection.
-        // theta is the angle from the normal, phi the other angle needed to specify the direction
-        let theta = asin(Double(arc4random())/Double(UINT32_MAX)) // [0, pi/2]
-        let phi = 2.0*M_PI*Double(arc4random())/Double(UINT32_MAX) // [0, 2pi]
-        // Pick a point in the triangle plane.
-        let p = triangle.firstNode
-        // Let zPlane be the normal to the and let xPlane and yPlane be two vectors in the triangle plane;
-        // they form an orthonormal coordinate system.
-        let zPlane = triangleNormal
-        let xPlane = normalised(p - triangleIntersection)
-        let yPlane = zPlane**xPlane
-        let vec = Vector3D(x: sin(theta)*cos(phi), y: sin(theta)*sin(phi), z: cos(theta))
-        photon.direction = normalised(vec.x*xPlane + vec.y*yPlane + vec.z*zPlane) // normalisation not needed?
-        return false
+        return closestIntersectionInformation
     }
     
-    func trace(room: Room, inout photon: Photon) -> Bool {
-        while true {
-            let (surfaceDistance, surfaceIntersection, surfaceNormal, surfaceTriangle) = self.findClosestIntersectedTriangle(room, photon: &photon, triangles: room.surfaces)
-            let (lightsourceDistance, _, _, _) = self.findClosestIntersectedTriangle(room, photon: &photon, triangles: room.lightsources)
-            let (sphereDistance, sphereIntersection, sphereNormal, sphere) = self.findClosestIntersectedSphere(room, photon: &photon)
-            // I think this happens if a photon hits close to an edge.
-            if surfaceDistance == Double.infinity && lightsourceDistance == Double.infinity && sphereDistance == Double.infinity {
+    func trace(room: Room, inout photon: Photon?) {
+        while photon != nil {
+            let intersectionInformation = self.findClosestIntersectedObject(room, photon: photon!)
+            if let intersectionInformation = intersectionInformation {
+                if intersectionInformation.rayIntersectable.isALightsource() {
+                    return
+                }
+                let photonAbsorbed = intersectionInformation.rayIntersectable.modifyPhoton(intersectionInformation.intersectionDatum, photon: &photon!)
+                if photonAbsorbed {
+                    photon = nil
+                }
+            } else {
                 print("The photon escaped.")
-                return false
-            }
-            if lightsourceDistance <= surfaceDistance && lightsourceDistance <= sphereDistance {
-                return true
-            } else if sphereDistance < surfaceDistance && sphereDistance < lightsourceDistance {
-                let absorbed = self.photonIntersectionAtSphere(room, photon: &photon, sphereIntersection: sphereIntersection!, sphereNormal: sphereNormal!, sphere: sphere!)
-                if absorbed {
-                    return false
-                }
-            } else if surfaceDistance < sphereDistance && surfaceDistance < lightsourceDistance {
-                let absorbed = self.photonIntersectionAtTriangle(room, photon: &photon, triangleIntersection: surfaceIntersection!, triangleNormal: surfaceNormal!, triangle: surfaceTriangle!)
-                if absorbed {
-                    return false
-                }
-            } else {
-                fatalError()
+                photon = nil
+                return
             }
         }
     }
-    
+
     func render() {
+        print("Starting rendering.")
         self.renderAll()
+        print("Finished rendering.")
         self.writeToFile()
         self.writeToPPMFile()
     }
@@ -331,9 +224,9 @@ class Renderer {
             let xRandom = (Double(arc4random())/Double(UINT32_MAX) - 0.5)/Double(self.passesPerPixel)
             //let xRandom = self.xRandom[i] - 0.5
             //let yRandom = self.yRandom[i] - 0.5
-            var photon = Photon(position: Vector3D(x: x, y: y, z: 800.0), direction: normalised(Vector3D(x: x+xRandom, y: y+yRandom, z: 800.0) - self.room.retina))
-            let detected = self.trace(self.room, photon: &photon)
-            if detected {
+            var photon: Photon? = Photon(position: Vector3D(x: x, y: y, z: 800.0), direction: normalised(Vector3D(x: x+xRandom, y: y+yRandom, z: 800.0) - self.room.retina))
+            self.trace(self.room, photon: &photon)
+            if let photon = photon {
                 r += photon.rIntensity
                 g += photon.gIntensity
                 b += photon.bIntensity
@@ -342,9 +235,9 @@ class Renderer {
         r = r/Double(self.passesPerPixel)
         g = g/Double(self.passesPerPixel)
         b = b/Double(self.passesPerPixel)
-        r = sqrt(2.0/(1.0+exp(-1.0*r/0.05))-1)
-        g = sqrt(2.0/(1.0+exp(-1.0*g/0.05))-1)
-        b = sqrt(2.0/(1.0+exp(-1.0*b/0.05))-1)
+        r = sqrt(2.0/(1.0+exp(-1.0*r/0.04))-1)
+        g = sqrt(2.0/(1.0+exp(-1.0*g/0.04))-1)
+        b = sqrt(2.0/(1.0+exp(-1.0*b/0.04))-1)
         self.pixelData[xIndex][yIndex].r = UInt8(255.0*r)
         self.pixelData[xIndex][yIndex].g = UInt8(255.0*g)
         self.pixelData[xIndex][yIndex].b = UInt8(255.0*b)

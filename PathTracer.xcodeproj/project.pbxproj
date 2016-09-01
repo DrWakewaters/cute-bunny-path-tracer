@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AA30F1321D6F4F060059FF29 /* IntersectionDatum.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA30F1311D6F4F060059FF29 /* IntersectionDatum.swift */; };
 		AA36A5B61D5BA3DB002AE90E /* main.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5B51D5BA3DB002AE90E /* main.swift */; };
 		AA36A5BD1D5BA423002AE90E /* Vector3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5BC1D5BA423002AE90E /* Vector3D.swift */; };
 		AA36A5BF1D5BA44A002AE90E /* Vector2D.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5BE1D5BA44A002AE90E /* Vector2D.swift */; };
@@ -17,6 +18,7 @@
 		AA36A5C91D5BC45F002AE90E /* Triangle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5C81D5BC45F002AE90E /* Triangle.swift */; };
 		AA36A5CB1D5BCE10002AE90E /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CA1D5BCE10002AE90E /* Renderer.swift */; };
 		AA36A5CD1D5BD089002AE90E /* PixelDatum.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA36A5CC1D5BD089002AE90E /* PixelDatum.swift */; };
+		AA3A3EBC1D6DFAB9002CDF73 /* RayIntersectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3A3EBB1D6DFAB9002CDF73 /* RayIntersectable.swift */; };
 		AA6D22A11D67ADE90063A5A0 /* Halton.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA6D22A01D67ADE90063A5A0 /* Halton.swift */; };
 		AA90D5151D62495600FFB0FA /* Position.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA90D5141D62495500FFB0FA /* Position.swift */; };
 /* End PBXBuildFile section */
@@ -34,6 +36,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AA30F1311D6F4F060059FF29 /* IntersectionDatum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IntersectionDatum.swift; sourceTree = "<group>"; };
 		AA36A5B21D5BA3DB002AE90E /* PathTracer */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PathTracer; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA36A5B51D5BA3DB002AE90E /* main.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = main.swift; sourceTree = "<group>"; };
 		AA36A5BC1D5BA423002AE90E /* Vector3D.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Vector3D.swift; sourceTree = "<group>"; };
@@ -45,6 +48,7 @@
 		AA36A5C81D5BC45F002AE90E /* Triangle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Triangle.swift; sourceTree = "<group>"; };
 		AA36A5CA1D5BCE10002AE90E /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		AA36A5CC1D5BD089002AE90E /* PixelDatum.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PixelDatum.swift; sourceTree = "<group>"; };
+		AA3A3EBB1D6DFAB9002CDF73 /* RayIntersectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RayIntersectable.swift; sourceTree = "<group>"; };
 		AA6D22A01D67ADE90063A5A0 /* Halton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Halton.swift; sourceTree = "<group>"; };
 		AA90D5141D62495500FFB0FA /* Position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Position.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -81,6 +85,8 @@
 			children = (
 				AA36A5B51D5BA3DB002AE90E /* main.swift */,
 				AA36A5CA1D5BCE10002AE90E /* Renderer.swift */,
+				AA30F1311D6F4F060059FF29 /* IntersectionDatum.swift */,
+				AA3A3EBB1D6DFAB9002CDF73 /* RayIntersectable.swift */,
 				AA6D22A01D67ADE90063A5A0 /* Halton.swift */,
 				AA90D5141D62495500FFB0FA /* Position.swift */,
 				AA36A5CC1D5BD089002AE90E /* PixelDatum.swift */,
@@ -152,9 +158,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AA3A3EBC1D6DFAB9002CDF73 /* RayIntersectable.swift in Sources */,
 				AA90D5151D62495600FFB0FA /* Position.swift in Sources */,
 				AA6D22A11D67ADE90063A5A0 /* Halton.swift in Sources */,
 				AA36A5BD1D5BA423002AE90E /* Vector3D.swift in Sources */,
+				AA30F1321D6F4F060059FF29 /* IntersectionDatum.swift in Sources */,
 				AA36A5BF1D5BA44A002AE90E /* Vector2D.swift in Sources */,
 				AA36A5C71D5BBD78002AE90E /* Room.swift in Sources */,
 				AA36A5C11D5BA4C6002AE90E /* Sphere.swift in Sources */,
